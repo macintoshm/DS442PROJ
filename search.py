@@ -94,8 +94,24 @@ def depthFirstSearch(problem):
     n = Directions.NORTH
     e = Directions.EAST
     location = problem.getStartState()
-    while (not problem.isGoalState(location)):
-        stuff
+    stack = Stack()
+    stack.push(location)
+    visitedLocations = [location]
+    while (not problem.getLegalActions(location).isEmpty):
+        nextLocations = problem.getLegalActions(location)
+        location = nextLocations[0]
+        visitedLocations.append(location)
+        stack.push(location)
+        if (problem.isGoalState(location)):
+            break
+
+    ans = []
+    while(not stack.isEmpty()):
+        ans.append(stack.pop()[1])
+
+    reverse(ans)
+    
+
 
 
 def breadthFirstSearch(problem):
