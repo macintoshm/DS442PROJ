@@ -94,12 +94,20 @@ def depthFirstSearch(problem):
     n = Directions.NORTH
     e = Directions.EAST
     location = problem.getStartState()
-    stack = Stack()
+    stack = util.Stack()
     stack.push(location)
     visitedLocations = [location]
-    while (not problem.getLegalActions(location).isEmpty):
-        nextLocations = problem.getLegalActions(location)
-        location = nextLocations[0]
+
+    while (len(problem.getSuccessors(location)) > 0):
+        nextLocations = problem.getSuccessors(location)
+        for j in nextLocations:
+            for i in visitedLocations: 
+                if i == j[0]:
+                    print("before: " + str(nextLocations))
+                    print("i: " + str(i))
+                    nextLocations.remove(j)
+                    print("after: " + str(nextLocations))
+        location = nextLocations[0][0]
         visitedLocations.append(location)
         stack.push(location)
         if (problem.isGoalState(location)):
