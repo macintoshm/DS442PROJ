@@ -98,20 +98,33 @@ def depthFirstSearch(problem):
     stack.push(location)
     visitedLocations = [location]
 
-    while (len(problem.getSuccessors(location)) > 0):
+    while (not problem.isGoalState(location)):
         nextLocations = problem.getSuccessors(location)
+        print(nextLocations)
         for j in nextLocations:
+            # print("nextLocations: " + str(nextLocations))
             for i in visitedLocations: 
+                # print("visitedLocations: " + str(visitedLocations))
                 if i == j[0]:
-                    print("before: " + str(nextLocations))
-                    print("i: " + str(i))
+                    # print("before: " + str(nextLocations))
+                    # print("i: " + str(i))
+                    # print("j[0]: " + str(j[0]))
                     nextLocations.remove(j)
-                    print("after: " + str(nextLocations))
-        location = nextLocations[0][0]
-        visitedLocations.append(location)
-        stack.push(location)
-        if (problem.isGoalState(location)):
-            break
+                    # print("after: " + str(nextLocations))
+                    break
+
+        if len(nextLocations) == 0: 
+            if (problem.isGoalState(location)):
+                break
+            location = stack.pop()
+            while (location in visitedLocations):
+                location = stack.pop() 
+        else:
+            location = nextLocations[0][0]
+            visitedLocations.append(location)
+            stack.push(location)
+            if (problem.isGoalState(location)):
+                break
 
     ans = []
     while(not stack.isEmpty()):
