@@ -72,6 +72,25 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+def makeSearchTree(problem):
+    pos = problem.getStartState()
+    tree = [pos]
+    tier = 0
+
+    while(): 
+        tier += 1
+        sucessors = problem.getLegalActions(pos)
+        for nextPos in sucessors:
+            if nextPos == pos:
+                continue
+            else:
+                continue
+    #for x in getsucessors
+    #if it's already in the above tier, then don't add it
+    #if getSucessors is empty after not adding it,break
+    # if it's not already in the above tier, add it 
+    
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -93,47 +112,60 @@ def depthFirstSearch(problem):
     w = Directions.WEST
     n = Directions.NORTH
     e = Directions.EAST
+
     location = problem.getStartState()
-    stack = util.Stack()
-    stack.push(location)
+    dirStack = util.Stack()
+    locStack = util.Stack()
+    locStack.push(location)
+    stackSize = 1
     visitedLocations = [location]
 
-    while (not problem.isGoalState(location)):
-        nextLocations = problem.getSuccessors(location)
-        print(nextLocations)
-        for j in nextLocations:
-            # print("nextLocations: " + str(nextLocations))
-            for i in visitedLocations: 
-                # print("visitedLocations: " + str(visitedLocations))
-                if i == j[0]:
-                    # print("before: " + str(nextLocations))
-                    # print("i: " + str(i))
-                    # print("j[0]: " + str(j[0]))
-                    nextLocations.remove(j)
-                    # print("after: " + str(nextLocations))
+    completed = False
+    while not problem.isGoalState(location): #check if existing location is goal state
+        print("location: " + str(location))
+        print("visitedLocations: " + str(visitedLocations))
+        nextLocations = problem.getSuccessors(location) #get list of successor locations for current state
+        print("nextLocations: " + str(nextLocations))
+        for j in nextLocations: #loop through each possible successor location (end on a state on previously visited)
+            # if (problem.isGoalState(j)):
+            #     visitedLocations.append(j[0]) #add currently viewed location to visted array
+            #     dirStack.push(j[1])
+            #     locStack.push(j[0])
+            #     stackSize += 1
+            #     location = j[0]
+            #     break
+            for i in visitedLocations: #loop through previously listed locations to check a match
+                previouslyListed = False
+                if(i == j[0]): #match identified
+                    previouslyListed = True
                     break
-
-        if len(nextLocations) == 0: 
-            if (problem.isGoalState(location)):
+            print("nextLocations2: " + str(nextLocations))
+            print("previouslyListed: " + str(previouslyListed))
+            if (not previouslyListed):
+                visitedLocations.append(j[0]) #add currently viewed location to visted array
+                print("pushed: " + j[1])
+                dirStack.push(j[1])
+                locStack.push(j[0])
+                stackSize += 1
+                location = j[0]
                 break
-            location = stack.pop()
-            while (location in visitedLocations):
-                location = stack.pop() 
-        else:
-            location = nextLocations[0][0]
-            visitedLocations.append(location)
-            stack.push(location)
-            if (problem.isGoalState(location)):
-                break
+        #if all of these locations were visited
+        if previouslyListed and not dirStack.isEmpty():
+            temp = dirStack.pop()
+            print("popped: " + str(temp))
+            location = locStack.pop() #set the while loop location to the previous node
+            stackSize -= 1
 
     ans = []
-    while(not stack.isEmpty()):
-        ans.append(stack.pop()[1])
+    while(not dirStack.isEmpty()):
+        temp = dirStack.pop()
+        if(stackSize > 1):
+            ans.append(temp)
+        print(ans)
 
-    reverse(ans)
-    
-
-
+    ans.reverse()
+    print("ans: " + str(ans))
+    return ans 
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
