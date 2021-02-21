@@ -127,13 +127,6 @@ def depthFirstSearch(problem):
         nextLocations = problem.getSuccessors(location) #get list of successor locations for current state
         print("nextLocations: " + str(nextLocations))
         for j in nextLocations: #loop through each possible successor location (end on a state on previously visited)
-            # if (problem.isGoalState(j)):
-            #     visitedLocations.append(j[0]) #add currently viewed location to visted array
-            #     dirStack.push(j[1])
-            #     locStack.push(j[0])
-            #     stackSize += 1
-            #     location = j[0]
-            #     break
             for i in visitedLocations: #loop through previously listed locations to check a match
                 previouslyListed = False
                 if(i == j[0]): #match identified
