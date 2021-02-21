@@ -123,6 +123,7 @@ def depthFirstSearch(problem):
 
     completed = False
     while not problem.isGoalState(location): #check if existing location is goal state
+        print("\n")
         print("location: " + str(location))
         print("visitedLocations: " + str(visitedLocations))
         nextLocations = problem.getSuccessors(location) #get list of successor locations for current state
@@ -144,10 +145,13 @@ def depthFirstSearch(problem):
                 break
         #if all of these locations were visited
         if previouslyListed and not dirStack.isEmpty():
+            location = locStack.pop()
+            for x in visitedLocations:
+                if x == location:
+                    location = locStack.pop()
             stacklist.pop()
             temp = dirStack.pop()
             #print("popped: " + str(temp))
-            location = locStack.pop() #set the while loop location to the previous node
             stackSize -= 1
         print("stacklist: " + str(stacklist))
 
