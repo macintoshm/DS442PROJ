@@ -137,7 +137,7 @@ def depthFirstSearch(problem):
             if (not previouslyListed):
                 visitedLocations.append(j[0]) #add currently viewed location to visted array
                 #print("pushed: " + j[1])
-                stacklist.append(j[1])
+                stacklist.append(j[0])
                 dirStack.push(j[1])
                 locStack.push(j[0])
                 stackSize += 1
@@ -146,9 +146,8 @@ def depthFirstSearch(problem):
         #if all of these locations were visited
         if previouslyListed and not dirStack.isEmpty():
             location = locStack.pop()
-            for x in visitedLocations:
-                if x == location:
-                    location = locStack.pop()
+            if location == stacklist[-1]:
+                location = locStack.pop()
             stacklist.pop()
             temp = dirStack.pop()
             #print("popped: " + str(temp))
