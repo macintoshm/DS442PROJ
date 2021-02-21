@@ -119,6 +119,7 @@ def depthFirstSearch(problem):
     locStack.push(location)
     stackSize = 1
     visitedLocations = [location]
+    stacklist = []
 
     completed = False
     while not problem.isGoalState(location): #check if existing location is goal state
@@ -132,11 +133,10 @@ def depthFirstSearch(problem):
                 if(i == j[0]): #match identified
                     previouslyListed = True
                     break
-            print("nextLocations2: " + str(nextLocations))
-            print("previouslyListed: " + str(previouslyListed))
             if (not previouslyListed):
                 visitedLocations.append(j[0]) #add currently viewed location to visted array
-                print("pushed: " + j[1])
+                #print("pushed: " + j[1])
+                stacklist.append(j[1])
                 dirStack.push(j[1])
                 locStack.push(j[0])
                 stackSize += 1
@@ -144,10 +144,12 @@ def depthFirstSearch(problem):
                 break
         #if all of these locations were visited
         if previouslyListed and not dirStack.isEmpty():
+            stacklist.pop()
             temp = dirStack.pop()
-            print("popped: " + str(temp))
+            #print("popped: " + str(temp))
             location = locStack.pop() #set the while loop location to the previous node
             stackSize -= 1
+        print("stacklist: " + str(stacklist))
 
     ans = []
     while(not dirStack.isEmpty()):
