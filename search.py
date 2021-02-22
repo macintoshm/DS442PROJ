@@ -72,25 +72,6 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
-def makeSearchTree(problem):
-    pos = problem.getStartState()
-    tree = [pos]
-    tier = 0
-
-    while(): 
-        tier += 1
-        sucessors = problem.getLegalActions(pos)
-        for nextPos in sucessors:
-            if nextPos == pos:
-                continue
-            else:
-                continue
-    #for x in getsucessors
-    #if it's already in the above tier, then don't add it
-    #if getSucessors is empty after not adding it,break
-    # if it's not already in the above tier, add it 
-    
-
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
@@ -107,73 +88,92 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
     import pacman
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-    n = Directions.NORTH
-    e = Directions.EAST
+    import util
 
-    location = problem.getStartState()
-    dirStack = util.Stack()
-    locStack = util.Stack()
-    locStack.push(location)
-    stackSize = 1
-    visitedLocations = [location]
-    stacklist = []
+    fringeType = util.Stack()
+    fringeType.push((problem.getStartState(), []))
+    fringeSize = 1
+    visited = []
+   
 
-    completed = False
-    while not problem.isGoalState(location): #check if existing location is goal state
-        print("\n")
-        print("location: " + str(location))
-        print("visitedLocations: " + str(visitedLocations))
-        nextLocations = problem.getSuccessors(location) #get list of successor locations for current state
-        print("nextLocations: " + str(nextLocations))
-        for j in nextLocations: #loop through each possible successor location (end on a state on previously visited)
-            for i in visitedLocations: #loop through previously listed locations to check a match
-                previouslyListed = False
-                if(i == j[0]): #match identified
-                    previouslyListed = True
-                    break
-            if (not previouslyListed):
-                visitedLocations.append(j[0]) #add currently viewed location to visted array
-                #print("pushed: " + j[1])
-                stacklist.append(j[0])
-                dirStack.push(j[1])
-                locStack.push(j[0])
-                stackSize += 1
-                location = j[0]
-                break
-        #if all of these locations were visited
-        if previouslyListed and not dirStack.isEmpty():
-            location = locStack.pop()
-            if location == stacklist[-1]:
-                location = locStack.pop()
-            stacklist.pop()
-            temp = dirStack.pop()
-            #print("popped: " + str(temp))
-            stackSize -= 1
-        print("stacklist: " + str(stacklist))
+    while not fringeType.isEmpty():
+        activeState = fringeType.pop()
+        fringeSize -= 1
+        location = activeState[0]
+        direction = activeState[1]
 
-    ans = []
-    while(not dirStack.isEmpty()):
-        temp = dirStack.pop()
-        if(stackSize > 1):
-            ans.append(temp)
-        print(ans)
+        visited.append(location)
 
-    ans.reverse()
-    print("ans: " + str(ans))
-    return ans 
+        if problem.isGoalState(location):
+            return direction
+
+        for possibleState in problem.getSuccessors(location):
+            if possibleState[0] not in visited:
+                temp = direction + [possibleState[1]]
+                fringeType.push((possibleState[0], temp))
+    return False
+    
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    import pacman
+    import util
+
+    fringeType = util.Queue()
+    fringeType.push((problem.getStartState(), []))
+    visited = []
+
+    while not fringeType.isEmpty():
+        location, direction = fringeType.pop()
+
+        if location in visited:
+            continue 
+
+        visited.append(location)
+
+        if problem.isGoalState(location):
+            return direction
+        for possibleState in problem.getSuccessors(location):
+            if possibleState[0] not in visited:
+                temp = direction + [possibleState[1]]
+                fringeType.push((possibleState[0], temp))
+    return False
+    
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    import util as u
+    fringe = u.PriorityQueue()
+    visited = []
+
+    fringe.push((problem.getStartState(), []), 0)
+
+    while not fringe.isEmpty():
+        temp = fringe.pop()
+        position = temp[0]
+        action = temp[1]
+
+        if position in visited:
+            continue 
+        visited.append(position)
+
+        if problem.isGoalState(position):
+            return action
+        
+        nextPosActions = problem.getSuccessors(position)
+
+        for x in nextPosActions:
+            if x[0] not in visited:
+                actionDir = action + [x[1]]
+                cost = problem.getCostOfActions(actionDir)
+                fringe.push((x[0], actionDir), cost)
+
+    return False
+
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -185,7 +185,31 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    import util as u
+
+    fringe = u.PriorityQueue()
+    visited = []
+
+    fringe.push((problem.getStartState(), [], heuristic(problem.getStartState(), problem)), 
+                heuristic(problem.getStartState(), problem))
+
+    while not fringe.isEmpty():
+        position, action, cost = fringe.pop()
+
+        if position in visited:
+            continue 
+        visited.append(position)
+
+        if problem.isGoalState(position):
+            return action
+        
+        nextPosActions = problem.getSuccessors(position)
+
+        for x in nextPosActions:
+            if x[0] not in visited:
+                actionDir = action + [x[1]]
+                fringe.push((x[0], actionDir, x[2] + cost), x[2] + heuristic(x[0], problem) + cost)
+    return False
 
 
 # Abbreviations
